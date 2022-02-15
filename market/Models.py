@@ -1,3 +1,6 @@
+from market import db
+
+
 class Item(db.Model):
     name = db.Column(db.String(length=30), nullable=False, unique=True)
     id = db.Column(db.String(length=30), nullable=False, primary_key=True)
