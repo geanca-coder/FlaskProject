@@ -21,7 +21,7 @@ def register_page():
         user_to_create = User(username=form.username.data, email=form.email_address.data, password=form.password1.data)
         db.session.add(user_to_create)
         db.session.commit()
-        return redirect(url_for('market_page'))
+        return redirect(url_for('login_page'))
     if form.errors != {}: #if there are errors in the validations field
         for i in form.errors.values():
             flash(f'Error{i}', category='danger')
