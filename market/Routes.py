@@ -3,7 +3,7 @@ from flask import render_template , url_for, redirect, flash, get_flashed_messag
 from market.Models import Item, User
 from market.forms import RegisterForm, LoginForm
 from market import db
-from flask_login import  login_user
+from flask_login import  login_user, logout_user
 @app.route('/')
 @app.route('/home')
 def home_page():
@@ -36,9 +36,14 @@ def login_page():
         attemptedUser = User.query.filter_by(username=form.username.data).first()
         if attemptedUser and attemptedUser.check_password(attempted_password=form.password.data):
             login_user(attemptedUser)
-            flash(f'Succes! You are logged in as:{attemptedUser}', category='succes')
+            flash(f'Succes! You are logged in as: {attemptedUser.username}', category='succes')
             return redirect(url_for('market_page'))
         else:
             flash('User or password are incorrect', category='danger')
     return render_template('login.html', form=form)
 
+@app.route('/logout')
+def logout_page():
+    logout_user()
+    flash('You have been logged out', category='info')
+    return redirect(url_for('home_page'))
