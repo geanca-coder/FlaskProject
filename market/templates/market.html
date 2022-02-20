@@ -23,7 +23,13 @@
                  <td>{{ i.id }}</td>
                  <td>{{ i.name}}</td>
                  <td>${{ i.price }}</td>
-                 <td>{{ i.available }}</td>
+                 <td>{% if i.available == True %}
+                        Yes
+                     {% else %}
+                        No
+                     {% endif %}
+                 </td>
+
                 <td>
                     <button class="btn btn-outline btn-info">
                         More info
