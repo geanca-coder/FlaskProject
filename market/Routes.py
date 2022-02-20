@@ -3,13 +3,16 @@ from flask import render_template , url_for, redirect, flash, get_flashed_messag
 from market.Models import Item, User
 from market.forms import RegisterForm, LoginForm
 from market import db
-from flask_login import  login_user, logout_user
+from flask_login import  login_user, logout_user, login_required
+
+
 @app.route('/')
 @app.route('/home')
 def home_page():
     return render_template('home.html')
 
 @app.route('/market')
+@login_required
 def market_page():
     items = Item.query.all()
     return render_template('market.html', items=items)
@@ -21,7 +24,9 @@ def register_page():
         user_to_create = User(username=form.username.data, email=form.email_address.data, password=form.password1.data)
         db.session.add(user_to_create)
         db.session.commit()
-        return redirect(url_for('login_page'))
+        login_user(user_to_create)
+        flash(f'Account created succesfully, you are logged in as: {user_to_create.username}', category='success')
+        return redirect(url_for('market_page'))
     if form.errors != {}: #if there are errors in the validations field
         for i in form.errors.values():
             flash(f'Error{i}', category='danger')
@@ -36,7 +41,7 @@ def login_page():
         attemptedUser = User.query.filter_by(username=form.username.data).first()
         if attemptedUser and attemptedUser.check_password(attempted_password=form.password.data):
             login_user(attemptedUser)
-            flash(f'Succes! You are logged in as: {attemptedUser.username}', category='succes')
+            flash(f'Success! You are logged in as: {attemptedUser.username}', category='success')
             return redirect(url_for('market_page'))
         else:
             flash('User or password are incorrect', category='danger')
